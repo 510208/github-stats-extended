@@ -74,22 +74,24 @@ Use `&theme=THEME_NAME` parameter like so :
 
 #### All inbuilt themes
 
-GitHub Stats Extended comes with several built-in themes (e.g. `dark`, `radical`, `merko`, `gruvbox`, `tokyonight`, `onedark`, `cobalt`, `synthwave`, `highcontrast`, `dracula`).
+GitHub Stats Extended comes with several built-in themes (e.g. `radical`, `merko`, `gruvbox`, `tokyonight`, `onedark`, `cobalt`, `synthwave`, `highcontrast`, `dracula`).
 
 <img src="https://res.cloudinary.com/anuraghazra/image/upload/v1595174536/grs-themes_l4ynja.png" alt="GitHub Stats Extended Themes" width="600px"/>
 
+We recommend using `light_github` for light mode and `dark_github` for dark mode. These themes match GitHub's default light and dark themes, ensuring that your stats card looks consistent with the rest of your profile. For repository cards and gist cards we recommend using `light_github_repocard` and `dark_github_repocard`.
+
 You can look at a preview for [all available themes](../packages/core/src/themes/README.md) or checkout the [theme config file](../packages/core/src/themes/index.ts). Please note that we paused the addition of new themes to decrease maintenance efforts; all pull requests related to new themes will be closed.
 
-#### Responsive Card Theme
+#### Light and Dark Mode
 
 [![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#responsive-card-theme#gh-dark-mode-only)
 [![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=default#gh-light-mode-only)](https://github.com/stats-organization/github-stats-extended#responsive-card-theme#gh-light-mode-only)
 
-Since GitHub will re-upload the cards and serve them from their [CDN](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-anonymized-urls), we can not infer the browser/GitHub theme on the server side. There are, however, four methods you can use to create dynamics themes on the client side.
+There are several methods you can use to create dynamic themes on the client side.
 
-##### Use GitHub's new media feature (recommended)
+##### Use GitHub's media feature (recommended)
 
-You can use [GitHub's new media feature](https://github.blog/changelog/2022-05-19-specify-theme-context-for-images-in-markdown-beta/) in HTML to specify whether to display images for light or dark themes. This is done using the HTML `<picture>` element in combination with the `prefers-color-scheme` media feature.
+You can use [GitHub's media feature](https://github.blog/changelog/2022-05-19-specify-theme-context-for-images-in-markdown-beta/) in HTML to specify which image to display in light or dark mode. This is done using the HTML `<picture>` element in combination with the `prefers-color-scheme` media feature.
 
 <!-- prettier-ignore -->
 ```html
@@ -117,9 +119,21 @@ You can use [GitHub's new media feature](https://github.blog/changelog/2022-05-1
 
 </details>
 
+##### Set light and dark mode in one card
+
+Use the `theme_light` and `theme_dark` or `*_light` / `*_dark` color parameters to embed both modes in a single card URL. See [Light & Dark Mode Parameters](#light--dark-mode-parameters) below for full details. The card will then display in light mode or dark mode based on your browser / operating system settings.
+
+This approach doesn't use any GitHub-specific features, so it works even when embedding the card outside of GitHub. Or on your GitHub sponsorship page, which doesn't support the other, GitHub-specific approaches.
+
+However, if a user chooses a GitHub theme different from their browser/OS setting, the card will not be able to detect this. Since GitHub re-uploads the cards and serves them from their [CDN](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-anonymized-urls), we can not infer the GitHub theme with this approach, only the browser/OS theme.
+
+```md
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=default&theme_dark=dark)
+```
+
 ##### Use GitHub's theme context tag
 
-You can use [GitHub's theme context](https://github.blog/changelog/2021-11-24-specify-theme-context-for-images-in-markdown/) tags to switch the theme based on the user GitHub theme automatically. This is done by appending `#gh-dark-mode-only` or `#gh-light-mode-only` to the end of an image URL. This tag will define whether the image specified in the markdown is only shown to viewers using a light or a dark GitHub theme:
+You can use [GitHub's theme context](https://github.blog/changelog/2021-11-24-specify-theme-context-for-images-in-markdown/) tags to switch the theme based on the user's light/dark mode. This is done by appending `#gh-dark-mode-only` or `#gh-light-mode-only` to the end of an image URL. This tag will define whether the image specified in the markdown is only shown to viewers using a light or a dark GitHub theme:
 
 ```md
 [![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-dark-mode-only)
@@ -164,6 +178,30 @@ You can use the `bg_color` parameter to make any of [the available themes](../pa
 
 </details>
 
+#### Light & Dark Mode Parameters
+
+You can use the `theme_light`, `theme_dark`, and `*_light` / `*_dark` color parameters to customize the look of your card for different modes.
+
+**Priority (lowest → highest):**
+
+- default theme
+- `theme`
+- `theme_light` / `theme_dark`
+- general color parameters
+- `*_light` / `*_dark` color parameters
+
+for example:
+
+```md
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=default&theme_dark=dark)
+```
+
+You can mix different parameter types. For example, set a light theme and a dark theme, but choose a custom title color:
+
+```md
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=default&theme_dark=dark&title_color=aabbcc)
+```
+
 ### Customization
 
 You can customize the appearance of all your cards however you wish with URL parameters.
@@ -172,16 +210,18 @@ You can customize the appearance of all your cards however you wish with URL par
 
 | Name            | Description                                                                                             | Type                                                              | Default value |
 | --------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------- |
-| `title_color`   | Card's title color.                                                                                     | string (hex color)                                                | `2f80ed`      |
-| `text_color`    | Body text color.                                                                                        | string (hex color)                                                | `434d58`      |
-| `icon_color`    | Icons color if available.                                                                               | string (hex color)                                                | `4c71f2`      |
-| `border_color`  | Card's border color. Does not apply when `hide_border` is enabled.                                      | string (hex color)                                                | `e4e2e2`      |
-| `bg_color`      | Card's background color.                                                                                | string (hex color or a gradient in the form of _angle,start,end_) | `fffefe`      |
+| `title_color`<sup>1</sup>   | Card's title color.                                                                                     | string (hex color)                                                | `2f80ed`      |
+| `text_color`<sup>1</sup>    | Body text color.                                                                                        | string (hex color)                                                | `434d58`      |
+| `icon_color`<sup>1</sup>    | Icons color if available.                                                                               | string (hex color)                                                | `4c71f2`      |
+| `border_color`<sup>1</sup>  | Card's border color. Does not apply when `hide_border` is enabled.                                      | string (hex color)                                                | `e4e2e2`      |
+| `bg_color`<sup>1</sup>      | Card's background color.                                                                                | string (hex color or a gradient in the form of _angle,start,end_) | `fffefe`      |
 | `hide_border`   | Hides the card's border.                                                                                | boolean                                                           | `false`       |
-| `theme`         | Name of the theme, choose from [all available themes](../packages/core/src/themes/README.md).           | enum                                                              | `default`     |
+| `theme`<sup>1</sup>         | Name of the theme, choose from [all available themes](../packages/core/src/themes/README.md).           | enum                                                              | `default`     |
 | `cache_seconds` | Sets the cache header manually (min: 21600, max: 86400).                                                | integer                                                           | `21600`       |
 | `locale`        | Sets the language in the card, you can check full list of available locales [here](#available-locales). | enum                                                              | `en`          |
 | `border_radius` | Corner rounding on the card.                                                                            | number                                                            | `4.5`         |
+
+<sup>1</sup>: These parameters support light and dark mode. You can use `*_light` and `*_dark` variants to specify different values for light and dark mode. For example, `title_color_light` and `title_color_dark` will set the title color for light and dark mode respectively.
 
 > [!WARNING]
 > We use caching to decrease the load on our servers (see <https://github.com/anuraghazra/github-readme-stats/issues/1471#issuecomment-1271551425>). Cards generated by [https://github-stats-extended.vercel.app/](https://github-stats-extended.vercel.app/frontend) are cached for a few hours or days, depending on server load. If you want the data on your cards to be updated more often you can [deploy your own instance](deploy.md) and set [environment variable](deploy.md#available-environment-variables) `CACHE_SECONDS` to a value of your choosing. Or you can use the [GitHub Action workflow](https://github.com/stats-organization/github-readme-stats-action).
@@ -283,11 +323,13 @@ If we don't support your language, please consider contributing! You can find mo
 | `custom_title`        | Sets a custom title for the card.                                                                                                                                                                                                                                                                                                                 | string                          | `<username> GitHub Stats`           |
 | `text_bold`           | Uses bold text.                                                                                                                                                                                                                                                                                                                                   | boolean                         | `true`                              |
 | `disable_animations`  | Disables all animations in the card.                                                                                                                                                                                                                                                                                                              | boolean                         | `false`                             |
-| `ring_color`          | Color of the rank circle.                                                                                                                                                                                                                                                                                                                         | string (hex color)              | `2f80ed`                            |
+| `ring_color`<sup>1</sup>          | Color of the rank circle.                                                                                                                                                                                                                                                                                                                         | string (hex color)              | `2f80ed`                            |
 | `number_format`       | Switches between two available formats for displaying the card values: `short` (i.e. `6.6k`) and `long` (i.e. `6626`).                                                                                                                                                                                                                            | enum                            | `short`                             |
 | `number_precision`    | Enforce the number of digits after the decimal point for `short` number format. Must be an integer between 0 and 2. Will be ignored for `long` number format.                                                                                                                                                                                     | integer (0, 1 or 2)             | `null`                              |
 | `show`                | Shows [additional items](#showing-additional-individual-stats) on stats card (i.e. `reviews`, `discussions_started`, `discussions_answered`, `prs_merged` or `prs_merged_percentage`. And the following, which support the `repo` and `owner` filters: `prs_authored`, `prs_commented`, `prs_reviewed`, `issues_authored` or `issues_commented`). | string (comma-separated values) | `null`                              |
 | `commits_year`        | Filters and counts only commits made in the specified year.                                                                                                                                                                                                                                                                                       | integer _(YYYY)_                | `<current year> (one year to date)` |
+
+<sup>1</sup>: This parameter supports light and dark mode. You can use `ring_color_light` and `ring_color_dark` to specify different colors for light and dark mode.
 
 > [!WARNING]
 > Custom title should be URI-escaped, as specified in [Percent Encoding](https://en.wikipedia.org/wiki/Percent-encoding) (i.e: `Anurag's GitHub Stats` should become `Anurag%27s%20GitHub%20Stats`). You can use [urlencoder.org](https://www.urlencoder.org/) to help you do this automatically.
@@ -414,12 +456,14 @@ You can customize the appearance and behavior of the top languages card using th
 | `role`               | Include repositories where the user has one of the specified [roles](https://docs.github.com/en/graphql/reference/enums#repositoryaffiliation) (OWNER, ORGANIZATION_MEMBER, COLLABORATOR). | string (comma-separated values) | `OWNER`                                             |
 | `custom_title`       | Sets a custom title for the card.                                                                                                                                                          | string                          | `Most Used Languages`                               |
 | `disable_animations` | Disables all animations in the card.                                                                                                                                                       | boolean                         | `false`                                             |
-| `prog_bar_bg_color`  | Background color of the bars. (Applies only to `normal` layout.)                                                                                                                           | string (hex color)              | `#ddd`                                              |
+| `prog_bar_bg_color`<sup>1</sup>       | Background color of the bars. (Applies only to `normal` layout.)                                                                                                                      | string (hex color)              | `#ddd`                                              |
 | `hide_progress`      | Uses the compact layout option, hides percentages, and removes the bars.                                                                                                                   | boolean                         | `false`                                             |
 | `hide_values`        | Hides language percentages or bytes while keeping the progress bars or chart.                                                                                                              | boolean                         | `false`                                             |
 | `size_weight`        | Configures language stats algorithm (see [Language stats algorithm](#language-stats-algorithm)).                                                                                           | integer                         | `1`                                                 |
 | `count_weight`       | Configures language stats algorithm (see [Language stats algorithm](#language-stats-algorithm)).                                                                                           | integer                         | `0`                                                 |
 | `stats_format`       | Switches between two available formats for language's stats `percentages` and `bytes`.                                                                                                     | enum                            | `percentages`                                       |
+
+<sup>1</sup>: This parameter supports light and dark mode. You can use `prog_bar_bg_color_light` and `prog_bar_bg_color_dark` to specify different colors for light and dark mode.
 
 > [!WARNING]
 > Language names and custom title should be URI-escaped, as specified in [Percent Encoding](https://en.wikipedia.org/wiki/Percent-encoding) (i.e: `c++` should become `c%2B%2B`, `jupyter notebook` should become `jupyter%20notebook`, `Most Used Languages` should become `Most%20Used%20Languages`, etc.) You can use [urlencoder.org](https://www.urlencoder.org/) to help you do this automatically.
