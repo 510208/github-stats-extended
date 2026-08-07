@@ -30,6 +30,20 @@ GitHub-Stats-Extended proactively precomputes and caches cards. This solves the 
 
 GitHub-Stats-Extended fetches up to 1000 of your starred repositories to accurately compute your stars count. In github-readme-stats, this is limited to 100 repos because github-readme-stats doesn't have the above-mentioned performance improvements.
 
+### Light and dark mode in a single card URL
+
+GitHub-Stats-Extended adds `theme_light`, `theme_dark`, and `*_light` / `*_dark` color parameter variants (e.g. `title_color_light`, `title_color_dark`) that let you embed both light and dark mode in a single card URL. The card will automatically switch between the two based on the viewer's browser or OS theme setting.
+
+```md
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&theme_light=light_github&theme_dark=dark_github)
+```
+
+This approach works on any platform, not just GitHub - and on GitHub sponsorship pages, which don't support the other approaches to light/dark theming. See [Set light and dark mode in one card](advanced_documentation.md#set-light-and-dark-mode-in-one-card) for full documentation.
+
+### GitHub-themed light and dark themes
+
+GitHub-Stats-Extended adds `light_github` and `dark_github` [themes](../packages/core/src/themes/README.md) that exactly match GitHub's default light and dark UI colors. For repo and gist cards, use `light_github_repocard` and `dark_github_repocard` instead, which use a different icon color.
+
 ### Customization of top languages card
 
 GitHub-Stats-Extended allows you to display your top languages without any numbers via the `hide_values` parameter. And the `prog_bar_bg_color` parameter allows you to customize the background color of the progress bars, e.g. by setting it to white:

@@ -78,7 +78,7 @@ GitHub Stats Extended comes with several built-in themes (e.g. `radical`, `merko
 
 <img src="https://res.cloudinary.com/anuraghazra/image/upload/v1595174536/grs-themes_l4ynja.png" alt="GitHub Stats Extended Themes" width="600px"/>
 
-We recommend using `light_github` for light mode and `dark_github` for dark mode. These themes match GitHub's default light and dark themes, ensuring that your stats card looks consistent with the rest of your profile. For repository cards and gist cards we recommend using `light_github_repocard` and `dark_github_repocard`.
+We recommend using `light_github` for light mode and `dark_github` for dark mode. These themes match GitHub's default light and dark themes, ensuring that your stats card looks consistent with the rest of your profile. For repository cards and gist cards we recommend using `light_github_repocard` and `dark_github_repocard`, which use a different icon color.
 
 You can look at a preview for [all available themes](../packages/core/src/themes/README.md) or checkout the [theme config file](../packages/core/src/themes/index.ts). Please note that we paused the addition of new themes to decrease maintenance efforts; all pull requests related to new themes will be closed.
 
@@ -125,7 +125,7 @@ Use the `theme_light` and `theme_dark` or `*_light` / `*_dark` color parameters 
 
 This approach doesn't use any GitHub-specific features, so it works even when embedding the card outside of GitHub. Or on your GitHub sponsorship page, which doesn't support the other, GitHub-specific approaches.
 
-However, if a user chooses a GitHub theme different from their browser/OS setting, the card will not be able to detect this. Since GitHub re-uploads the cards and serves them from their [CDN](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-anonymized-urls), we can not infer the GitHub theme with this approach, only the browser/OS theme.
+However, unlike with the "media" feature or the theme context tag, if a user chooses a GitHub theme different from their browser/OS setting, the card will not be able to detect this. Since GitHub re-uploads the cards and serves them from their [CDN](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-anonymized-urls), we can not infer the GitHub theme with this approach, only the browser/OS theme.
 
 ```md
 ![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=light_github&theme_dark=dark_github)
