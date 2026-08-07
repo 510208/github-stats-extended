@@ -84,8 +84,8 @@ You can look at a preview for [all available themes](../packages/core/src/themes
 
 #### Light and Dark Mode
 
-[![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#responsive-card-theme#gh-dark-mode-only)
-[![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=default#gh-light-mode-only)](https://github.com/stats-organization/github-stats-extended#responsive-card-theme#gh-light-mode-only)
+[![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark_github#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#responsive-card-theme#gh-dark-mode-only)
+[![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=light_github#gh-light-mode-only)](https://github.com/stats-organization/github-stats-extended#responsive-card-theme#gh-light-mode-only)
 
 There are several methods you can use to create dynamic themes on the client side.
 
@@ -97,11 +97,11 @@ You can use [GitHub's media feature](https://github.blog/changelog/2022-05-19-sp
 ```html
 <picture>
   <source
-    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark"
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark_github"
     media="(prefers-color-scheme: dark)"
   />
   <!-- light mode -->
-  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true" />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=light_github" />
 </picture>
 ```
 
@@ -110,11 +110,11 @@ You can use [GitHub's media feature](https://github.blog/changelog/2022-05-19-sp
 
 <picture>
   <source
-    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark"
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark_github"
     media="(prefers-color-scheme: dark)"
   />
   <!-- light mode -->
-  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true" />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=light_github" />
 </picture>
 
 </details>
@@ -128,23 +128,30 @@ This approach doesn't use any GitHub-specific features, so it works even when em
 However, if a user chooses a GitHub theme different from their browser/OS setting, the card will not be able to detect this. Since GitHub re-uploads the cards and serves them from their [CDN](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-anonymized-urls), we can not infer the GitHub theme with this approach, only the browser/OS theme.
 
 ```md
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=default&theme_dark=dark)
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=light_github&theme_dark=dark_github)
 ```
+
+<details>
+<summary>:eyes: Show example</summary>
+
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=light_github&theme_dark=dark_github)
+
+</details>
 
 ##### Use GitHub's theme context tag
 
 You can use [GitHub's theme context](https://github.blog/changelog/2021-11-24-specify-theme-context-for-images-in-markdown/) tags to switch the theme based on the user's light/dark mode. This is done by appending `#gh-dark-mode-only` or `#gh-light-mode-only` to the end of an image URL. This tag will define whether the image specified in the markdown is only shown to viewers using a light or a dark GitHub theme:
 
 ```md
-[![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-dark-mode-only)
-[![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=default#gh-light-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-light-mode-only)
+[![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark_github#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-dark-mode-only)
+[![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=light_github#gh-light-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-light-mode-only)
 ```
 
 <details>
 <summary>:eyes: Show example</summary>
 
-[![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-dark-mode-only)
-[![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=default#gh-light-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-light-mode-only)
+[![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark_github#gh-dark-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-dark-mode-only)
+[![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=light_github#gh-light-mode-only)](https://github.com/stats-organization/github-stats-extended#gh-light-mode-only)
 
 </details>
 
@@ -193,13 +200,13 @@ You can use the `theme_light`, `theme_dark`, and `*_light` / `*_dark` color para
 for example:
 
 ```md
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=default&theme_dark=dark)
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=light_github&theme_dark=dark_github)
 ```
 
 You can mix different parameter types. For example, set a light theme and a dark theme, but choose a custom title color:
 
 ```md
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=default&theme_dark=dark&title_color=aabbcc)
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme_light=light_github&theme_dark=dark_github&title_color=aabbcc)
 ```
 
 ### Customization
@@ -373,19 +380,43 @@ You can customize the appearance and behavior of the pinned repository card usin
 
 ### Demo
 
-![Readme Card](https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&theme=dark_github_repocard"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&theme=light_github_repocard" alt="Readme Card" />
+</picture>
 
 Use [show\_owner](#options) query option to include the repo's owner username:
 
-![Readme Card](https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&show_owner=true)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&show_owner=true&theme=dark_github_repocard"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&show_owner=true&theme=light_github_repocard" alt="Readme Card" />
+</picture>
 
 Use [show](#options) query option to display the user's contributions to the repository:
 
-![Readme Card](https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&theme=dark_github_repocard"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&theme=light_github_repocard" alt="Readme Card" />
+</picture>
 
 You can also specify the `repo` parameter in the form `<user_or_organization>/<repository>` to pin a repository from any user or organization, not just your own. This allows you to showcase repositories you contributed to, regardless of ownership.
 
-![Readme Card](https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=statykjs/statyk&show_owner=true&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=statykjs/statyk&show_owner=true&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&theme=dark_github_repocard"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=statykjs/statyk&show_owner=true&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&theme=light_github_repocard" alt="Readme Card" />
+</picture>
 
 ## GitHub Gist Pins
 
@@ -412,11 +443,23 @@ You can customize the appearance and behavior of the gist card using the [common
 
 ### Demo
 
-![Gist Card](https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d&theme=dark_github_repocard"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d&theme=light_github_repocard" alt="Gist Card" />
+</picture>
 
 Use [show\_owner](#options-1) query option to include the gist's owner username
 
-![Gist Card](https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d&show_owner=true)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d&show_owner=true&theme=dark_github_repocard"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d&show_owner=true&theme=light_github_repocard" alt="Gist Card" />
+</picture>
 
 ## Top Languages Card
 
@@ -567,31 +610,83 @@ You can use the `&stats_format=bytes` option to display the stats in bytes inste
 
 ### Demo
 
-![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&theme=light_github" alt="Top Langs" />
+</picture>
 
 #### Compact layout
 
-![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=compact)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=compact&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=compact&theme=light_github" alt="Top Langs" />
+</picture>
 
 #### Donut Chart layout
 
-[![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut)](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut)
+<a href="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut">
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut&theme=light_github" alt="Top Langs" />
+  </picture>
+</a>
 
 #### Donut Vertical Chart layout
 
-[![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut-vertical)](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut-vertical)
+<a href="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut-vertical">
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut-vertical&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=donut-vertical&theme=light_github" alt="Top Langs" />
+  </picture>
+</a>
 
 #### Pie Chart layout
 
-[![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=pie)](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=pie)
+<a href="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=pie">
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=pie&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&layout=pie&theme=light_github" alt="Top Langs" />
+  </picture>
+</a>
 
 #### Hidden progress bars
 
-[![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&hide_progress=true)](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&hide_progress=true)
+<a href="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&hide_progress=true">
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&hide_progress=true&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&hide_progress=true&theme=light_github" alt="Top Langs" />
+  </picture>
+</a>
 
 #### Display bytes instead of percentage
 
-[![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&stats_format=bytes)](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&stats_format=bytes)
+<a href="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&stats_format=bytes">
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&stats_format=bytes&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&stats_format=bytes&theme=light_github" alt="Top Langs" />
+  </picture>
+</a>
 
 ## WakaTime Stats Card
 
@@ -630,13 +725,31 @@ You can customize the appearance and behavior of the WakaTime stats card using t
 
 ### Demo
 
-![Alan's WakaTime stats](https://github-stats-extended.vercel.app/api/wakatime?username=alan)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/wakatime?username=alan&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/wakatime?username=alan&theme=light_github" alt="Alan's WakaTime stats" />
+</picture>
 
-![Alan's WakaTime stats](https://github-stats-extended.vercel.app/api/wakatime?username=alan&card_width=315&hide_progress=true)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/wakatime?username=alan&card_width=315&hide_progress=true&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/wakatime?username=alan&card_width=315&hide_progress=true&theme=light_github" alt="Alan's WakaTime stats" />
+</picture>
 
 #### Compact layout
 
-![Alan's WakaTime stats](https://github-stats-extended.vercel.app/api/wakatime?username=alan&layout=compact)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/wakatime?username=alan&layout=compact&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/wakatime?username=alan&layout=compact&theme=light_github" alt="Alan's WakaTime stats" />
+</picture>
 
 ---
 
@@ -644,43 +757,103 @@ You can customize the appearance and behavior of the WakaTime stats card using t
 
 ### Default
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Hiding specific stats
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&hide=contribs,issues)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&hide=contribs,issues&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&hide=contribs,issues&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Showing additional stats
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&show=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_commented,prs_reviewed,issues_commented)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&show=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_commented,prs_reviewed,issues_commented&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&show=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_commented,prs_reviewed,issues_commented&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Showing stats for a specific repository
 
-![Anurag's GitHub stats for anuraghazra/github-readme-stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&repo=anuraghazra/github-readme-stats&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=Anurag%27s%20Stats%20for%20github-readme-stats&card_width=370)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&repo=anuraghazra/github-readme-stats&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=Anurag%27s%20Stats%20for%20github-readme-stats&card_width=370&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&repo=anuraghazra/github-readme-stats&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=Anurag%27s%20Stats%20for%20github-readme-stats&card_width=370&theme=light_github" alt="Anurag's GitHub stats for anuraghazra/github-readme-stats" />
+</picture>
 
 ### Showing stats for a specific organization
 
-![Anurag's GitHub stats for razorpay](https://github-stats-extended.vercel.app/api?username=anuraghazra&owner=razorpay&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=Anurag%27s%20Stats%20for%20razorpay&card_width=370)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&owner=razorpay&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=Anurag%27s%20Stats%20for%20razorpay&card_width=370&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&owner=razorpay&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=Anurag%27s%20Stats%20for%20razorpay&card_width=370&theme=light_github" alt="Anurag's GitHub stats for razorpay" />
+</picture>
 
 ### Showing icons
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&hide=issues&show_icons=true)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&hide=issues&show_icons=true&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&hide=issues&show_icons=true&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Shows GitHub logo instead rank level
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&rank_icon=github)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&rank_icon=github&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&rank_icon=github&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Shows user rank percentile instead of rank level
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&rank_icon=percentile)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&rank_icon=percentile&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&rank_icon=percentile&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Customize Border Color
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&border_color=2e4058)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&border_color=2e4058&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&border_color=2e4058&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Include All Commits
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&include_all_commits=true)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&include_all_commits=true&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&include_all_commits=true&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Themes
 
@@ -698,7 +871,13 @@ Choose from any of the [default themes](#themes)
 
 ### Setting card locale
 
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api/?username=anuraghazra&locale=es)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/?username=anuraghazra&locale=es&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/?username=anuraghazra&locale=es&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 ### Customizing repo card
 
@@ -706,7 +885,13 @@ Choose from any of the [default themes](#themes)
 
 ### Gist card
 
-![Gist Card](https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d&theme=dark_github_repocard"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/gist?id=bbfce31e0217a3689c8d961a356cb10d&theme=light_github_repocard" alt="Gist Card" />
+</picture>
 
 ### Customizing gist card
 
@@ -714,11 +899,23 @@ Choose from any of the [default themes](#themes)
 
 ### Top languages
 
-![Top Langs](https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=anuraghazra&theme=light_github" alt="Top Langs" />
+</picture>
 
 ### WakaTime card
 
-![Alan's WakaTime stats](https://github-stats-extended.vercel.app/api/wakatime?username=alan)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api/wakatime?username=alan&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api/wakatime?username=alan&theme=light_github" alt="Alan's WakaTime stats" />
+</picture>
 
 ---
 
@@ -731,18 +928,22 @@ By default, GitHub does not lay out the cards side by side. To do that, you can 
 <!-- prettier-ignore -->
 ```html
 <a href="https://github-stats-extended.vercel.app/api?username=anuraghazra">
-  <img
-    height="200"
-    align="center"
-    src="https://github-stats-extended.vercel.app/api?username=anuraghazra"
-  />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img height="200" align="center" src="https://github-stats-extended.vercel.app/api?username=anuraghazra&theme=light_github" />
+  </picture>
 </a>
 <a href="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320">
-  <img
-    height="200"
-    align="center"
-    src="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320"
-  />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img height="200" align="center" src="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320&theme=light_github" />
+  </picture>
 </a>
 ```
 
@@ -750,36 +951,53 @@ By default, GitHub does not lay out the cards side by side. To do that, you can 
 <summary>:eyes: Show example</summary>
 
 <a href="https://github-stats-extended.vercel.app/api?username=anuraghazra">
-  <img
-    height="200"
-    align="center"
-    src="https://github-stats-extended.vercel.app/api?username=anuraghazra"
-  />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img height="200" align="center" src="https://github-stats-extended.vercel.app/api?username=anuraghazra&theme=light_github" />
+  </picture>
 </a>
 <a href="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320">
-  <img
-    height="200"
-    align="center"
-    src="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320"
-  />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320&theme=dark_github"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img height="200" align="center" src="https://github-stats-extended.vercel.app/api/top-langs?username=anuraghazra&layout=compact&langs_count=8&card_width=320&theme=light_github" />
+  </picture>
 </a>
 
 </details>
 
 ### Pinning repositories
 
+<!-- prettier-ignore -->
 ```html
 <a href="https://github.com/anuraghazra/github-readme-stats">
-  <img
-    align="center"
-    src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats"
-  />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&theme=dark_github_repocard"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img
+      align="center"
+      src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&theme=light_github_repocard"
+    />
+  </picture>
 </a>
 <a href="https://github.com/anuraghazra/convoychat">
-  <img
-    align="center"
-    src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=convoychat"
-  />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=convoychat&theme=dark_github_repocard"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img
+      align="center"
+      src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=convoychat&theme=light_github_repocard"
+    />
+  </picture>
 </a>
 ```
 
@@ -787,10 +1005,22 @@ By default, GitHub does not lay out the cards side by side. To do that, you can 
 <summary>:eyes: Show example</summary>
 
 <a href="https://github.com/anuraghazra/github-readme-stats">
-  <img align="center" src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats" />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&theme=dark_github_repocard"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img align="center" src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=github-readme-stats&theme=light_github_repocard" />
+  </picture>
 </a>
 <a href="https://github.com/anuraghazra/convoychat">
-  <img align="center" src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=convoychat" />
+  <picture>
+    <source
+      srcset="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=convoychat&theme=dark_github_repocard"
+      media="(prefers-color-scheme: dark)"
+    />
+    <img align="center" src="https://github-stats-extended.vercel.app/api/pin/?username=anuraghazra&repo=convoychat&theme=light_github_repocard" />
+  </picture>
 </a>
 
 </details>
