@@ -84,8 +84,13 @@ You can look at a preview for [all available themes](../packages/core/src/themes
 
 #### Light and Dark Mode
 
-[![Anurag's GitHub stats-Dark](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark_github#gh-dark-mode-only)](#light-and-dark-mode)
-[![Anurag's GitHub stats-Light](https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=light_github#gh-light-mode-only)](#light-and-dark-mode)
+<picture>
+  <source
+    srcset="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=dark_github"
+    media="(prefers-color-scheme: dark)"
+  />
+  <img src="https://github-stats-extended.vercel.app/api?username=anuraghazra&show_icons=true&theme=light_github" alt="Anurag's GitHub stats" />
+</picture>
 
 There are several methods you can use to create dynamic themes on the client side.
 
