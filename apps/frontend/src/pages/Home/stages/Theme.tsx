@@ -7,10 +7,11 @@ import {
   getCardThemeBackdrop,
   getThemeSortRank,
 } from "../../../components/Card/themeBackdrop";
+import { CardCategory } from "../../../models/CardType";
 import type { CardUrlBuilder } from "../../../models/CardUrl";
 import { useTheme } from "../../../redux/selectors/themeSelectors";
 
-const excludedThemes = [
+const excludedThemes: Array<ThemeName> = [
   "default",
   "default_repocard",
   "github_dark",
@@ -49,18 +50,19 @@ const nonRepoCardThemes = forPicker(
 interface ThemeStageProps {
   card: CardUrlBuilder;
   theme: string;
-  isRepoCard: boolean;
-  onThemeChange: (theme: string) => void;
+  category: CardCategory;
+  onThemeChange: (theme: ThemeName) => void;
 }
 
 export function ThemeStage({
   theme,
   card,
-  isRepoCard,
+  category,
   onThemeChange,
 }: ThemeStageProps): JSX.Element {
   const { isDark } = useTheme();
-  const themeList = isRepoCard ? repoCardThemes : nonRepoCardThemes;
+  const themeList =
+    category === CardCategory.REPO ? repoCardThemes : nonRepoCardThemes;
 
   return (
     <>
