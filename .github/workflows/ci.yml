@@ -126,5 +126,11 @@ jobs:
       - name: Lint (knip)
         run: pnpm run lint:knip
 
+      - name: Lint (deduped deps)
+        run: pnpm run lint:deps
+
+      - name: Lint (generated GraphQL types)
+        run: pnpm --filter ./packages/core/ run check-graphql-types
+
       - name: Typecheck
         run: pnpm run typecheck

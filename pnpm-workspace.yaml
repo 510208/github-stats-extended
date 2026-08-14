@@ -1,6 +1,17 @@
+# `packageManager` in package.json is deliberately held at pnpm 10.
+# Vercel does not support pnpm 11 yet, and deploying with it makes every request fail at runtime.
+# See https://github.com/stats-organization/github-stats-extended/pull/459
+#
+# Re-check Vercel's supported package managers before updating again:
+# https://vercel.com/docs/package-managers#supported-package-managers
 packages:
   - apps/*
   - packages/*
+
+onlyBuiltDependencies:
+  - "@swc/core"
+  - esbuild
+  - unrs-resolver
 
 catalog:
   "@vitest/coverage-v8": 4.1.10
@@ -9,9 +20,18 @@ catalog:
   vite: 8.1.5
   vitest: 4.1.10
 
+overrides:
+  # @tailwindcss/node pins lightningcss exactly while vite floats on ^1.32.0, so a cold re-resolve installs both.
+  # Updates against the existing lockfile keep 1.32.0 either way, so this only guards re-resolution.
+  # Enforced by scripts/assert-deduped.ts; drop it there too once @tailwindcss/node pins a version vite also resolves to.
+  "vite>lightningcss": 1.32.0
+
+# Deliberately stricter than pnpm 11's 1440 default (7 days vs 1)
 minimumReleaseAge: 10080
 
-onlyBuiltDependencies:
-  - "@swc/core"
-  - esbuild
-  - unrs-resolver
+# Reject a version with weaker publish trust evidence than an earlier one.
+trustPolicy: no-downgrade
+
+# Fail on unmet peers and on a Node version outside `engines`, instead of warning
+strictPeerDependencies: true
+engineStrict: true

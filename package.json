@@ -21,7 +21,7 @@
     "prettier": "3.9.5",
     "turbo": "2.10.5",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.64.0",
+    "typescript-eslint": "8.65.0",
     "vitest": "catalog:default"
   },
   "scripts": {
@@ -37,7 +37,8 @@
     "lint:eslint": "eslint",
     "lint:eslint:fix": "eslint --fix",
     "lint:knip": "knip",
-    "typecheck": "turbo run typecheck"
+    "lint:deps": "node scripts/assert-deduped.ts",
+    "typecheck": "turbo run typecheck && tsc -p tsconfig.scripts.json"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css,json,jsonc,yaml,yml}": "prettier --write"
