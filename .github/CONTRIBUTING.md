@@ -10,7 +10,7 @@ pnpm run build:packages
 pnpm run dev:frontend
 ```
 
-The easiest way to run and test the project is to deploy it to Vercel as described in the [deployment guide](../docs/deploy.md).
+The easiest way to run and test the project is to deploy it to Vercel as described in the [deployment guide](../apps/frontend/src/content/docs/docs/deploy.md).
 
 ## Tests
 
@@ -46,11 +46,11 @@ Never edit the generated files by hand — change the `.graphql` file and regene
 
 ## Themes Contribution
 
-We have stopped the addition of new themes to decrease maintenance efforts. If you are considering contributing your theme just because you are using it personally, then instead of adding it to our theme collection, you can use card [customization options](../docs/advanced_documentation.md#customization).
+We have stopped the addition of new themes to decrease maintenance efforts. If you are considering contributing your theme just because you are using it personally, then instead of adding it to our theme collection, you can use card [customization options](../apps/frontend/src/content/docs/docs/advanced_documentation.md#customization).
 
 ## Translations Contribution
 
-GitHub-Stats-Extended supports multiple languages. If we are missing your language, you can contribute it! You can check the currently supported languages [here](../docs/advanced_documentation.md#available-locales).
+GitHub-Stats-Extended supports multiple languages. If we are missing your language, you can contribute it! You can check the currently supported languages [here](../apps/frontend/src/content/docs/docs/advanced_documentation.md#available-locales).
 
 To contribute your language you need to edit the [backend/src/translations.js](../backend/src/translations.js) file and add a new property to each object where the key is the language code in [ISO 639-1 standard](https://www.andiamo.co.uk/resources/iso-language-codes/) and the value is the translated string.
 

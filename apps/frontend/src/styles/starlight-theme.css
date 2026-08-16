@@ -1,0 +1,20 @@
+@import "./layer-order.css";
+
+/*
+ * Gives the docs the wizard's accent and GitHub's dark background, so the two
+ * halves read as one site.
+ */
+:root {
+  --app-primary: #2f80ed;
+
+  --sl-font: "Segoe UI", Ubuntu, Sans-Serif;
+  --sl-color-accent: var(--app-primary);
+  --sl-color-accent-low: color-mix(in oklab, var(--app-primary), #000 45%);
+  --sl-color-accent-high: color-mix(in oklab, var(--app-primary), #fff 45%);
+  --sl-color-text-accent: var(--app-primary);
+}
+
+:root[data-theme="dark"] {
+  --sl-color-bg: #0d1117;
+  --sl-color-bg-sidebar: #0d1117;
+}
