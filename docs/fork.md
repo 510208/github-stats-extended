@@ -44,6 +44,12 @@ This approach works on any platform, not just GitHub - and on GitHub sponsorship
 
 GitHub-Stats-Extended adds `light_github` and `dark_github` [themes](../packages/core/src/themes/README.md) that exactly match GitHub's default light and dark UI colors. For repo and gist cards, use `light_github_repocard` and `dark_github_repocard` instead, which use a different icon color.
 
+### New Contributions stat
+
+GitHub-Stats-Extended adds an optional stat showing the total number of [contributions](https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference#what-counts-as-a-contribution) (commits, pull requests, issues, etc.) across all years of a user's GitHub history. Add `&show=contributions` to your stats card URL to enable it. Whether private contributions are counted depends on [your GitHub profile visibility settings](https://docs.github.com/en/account-and-profile/how-tos/contribution-settings/manage-visibility-settings-for-private-contributions-and-achievements#changing-the-visibility-of-your-private-contributions).
+
+Note that the pre-existing "Contributed to" stat indicates the number of repositories a user has contributed to, not the number of contributions.
+
 ### Customization of top languages card
 
 GitHub-Stats-Extended allows you to display your top languages without any numbers via the `hide_values` parameter. And the `prog_bar_bg_color` parameter allows you to customize the background color of the progress bars, e.g. by setting it to white:
