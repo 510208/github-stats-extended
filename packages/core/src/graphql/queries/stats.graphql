@@ -90,3 +90,28 @@ fragment YearContributions on ContributionsCollection {
     totalContributions
   }
 }
+
+fragment RangeContributionsByRepo on d {
+  commitContributionsByRepository(maxRepositories: $repoCap) {
+    repository {
+      nameWithOwner
+    }
+  }
+  issueContributionsByRepository(maxRepositories: $repoCap) {
+    repository {
+      nameWithOwner
+    }
+  }
+  pullRequestContributionsByRepository(maxRepositories: $repoCap) {
+    repository {
+      nameWithOwner
+    }
+  }
+  repositoryContributions(first: $repoCap) {
+    nodes {
+      repository {
+        nameWithOwner
+      }
+    }
+  }
+}

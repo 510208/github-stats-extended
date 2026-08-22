@@ -21,6 +21,11 @@ import type {
   UserInfoQuery,
   UserInfoQueryVariables,
 } from "../graphql/generated/stats.js";
+import type { ContributionRange } from "../graphql/reposContributedToDocument.js";
+import {
+  MAX_REPOSITORIES_LIMIT,
+  buildReposContributedToDocument,
+} from "../graphql/reposContributedToDocument.js";
 
 import type { RepoUserStats, StatsData } from "./types.js";
 
@@ -332,6 +337,177 @@ const fetchTotalContributions = async (
   return total;
 };
 
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * Round a timestamp (e.g. `Date.getTime()`) to the nearest UTC midnight.
+ *
+ * @param timestamp Milliseconds since epoch.
+ * @returns Milliseconds since epoch of the nearest UTC midnight.
+ */
+const roundToNearestMidnight = (timestamp: number): number =>
+  Math.round(timestamp / MS_PER_DAY) * MS_PER_DAY;
+
+// TODO: consider merging this with `ContributionRange`
+/** A range still being resolved, alongside its actual `Date` bounds (for bisecting). */
+interface PendingRange {
+  from: Date;
+  to: Date;
+}
+
+/**
+ * Fetch the distinct set of repositories a user contributed to (commits,
+ * issues, PRs, or repo creation) across every given range.
+ *
+ * All ranges still pending are queried together in a single request (one
+ * aliased `contributionsCollection` field each). Whenever a range's
+ * sub-collection returns `CONTRIBUTIONS_COLLECTION_REPO_CAP` results, that
+ * range is bisected and requeried in the next round, since the true count
+ * could be higher and some repos may be missing from the response.
+ *
+ * @param username GitHub username.
+ * @param ranges Ranges to fetch.
+ * @param pat Optional PAT override.
+ * @returns The distinct set of `nameWithOwner` repo identifiers.
+ */
+const fetchReposContributedToForRanges = async (
+  username: string,
+  ranges: Array<PendingRange>,
+  pat: string | null,
+): Promise<Set<string>> => {
+  const repos = new Set<string>();
+  let pending = ranges;
+
+  while (pending.length > 0) {
+    const document = buildReposContributedToDocument(
+      pending.map((range): ContributionRange => ({
+        from: range.from.toISOString(),
+        to: range.to.toISOString(),
+      })),
+    );
+    const fetcher = createGraphQLFetcher(document, "bearer");
+    const res = await retryer(
+      fetcher,
+      { login: username, maxRepositories: MAX_REPOSITORIES_LIMIT },
+      pat,
+    );
+
+    if (res.data.errors) {
+      logger.error(res.data.errors);
+      const firstError = res.data.errors[0];
+      if (firstError?.message) {
+        throw new CustomError(
+          wrapTextMultiline(firstError.message, 525, 12)[0] ?? "",
+          res.statusText,
+        );
+      }
+      throw new CustomError(
+        "Something went wrong while trying to retrieve the repository contributions data using the GraphQL API.",
+        CustomError.GRAPHQL_ERROR,
+      );
+    }
+
+    const user = res.data.data.user;
+    if (!user) {
+      throw new CustomError(
+        "Something went wrong while trying to retrieve the repository contributions data using the GraphQL API.",
+        CustomError.GRAPHQL_ERROR,
+      );
+    }
+
+    const nextPending: Array<PendingRange> = [];
+    pending.forEach((range, index) => {
+      const rangeResponse = user[`range_${index}`];
+      if (!rangeResponse) {
+        throw new CustomError(
+          "Something went wrong while trying to retrieve the repository contributions data using the GraphQL API.",
+          CustomError.GRAPHQL_ERROR,
+        );
+      }
+
+      const commitRepos = rangeResponse.commitContributionsByRepository;
+      const issueRepos = rangeResponse.issueContributionsByRepository;
+      const prRepos = rangeResponse.pullRequestContributionsByRepository;
+      const createdRepoNodes =
+        rangeResponse.repositoryContributions.nodes ?? [];
+
+      const isSaturated =
+        commitRepos.length >= MAX_REPOSITORIES_LIMIT ||
+        issueRepos.length >= MAX_REPOSITORIES_LIMIT ||
+        prRepos.length >= MAX_REPOSITORIES_LIMIT ||
+        createdRepoNodes.length >= MAX_REPOSITORIES_LIMIT;
+
+      const rangeDays = Math.round(
+        (range.to.getTime() - range.from.getTime()) / MS_PER_DAY,
+      );
+      // a range of 1 day or less can't be split any further
+      if (isSaturated && rangeDays >= 2) {
+        const mid = new Date(
+          roundToNearestMidnight(
+            range.from.getTime() + Math.floor(rangeDays / 2) * MS_PER_DAY,
+          ),
+        );
+        nextPending.push({
+          from: range.from,
+          to: new Date(mid.getTime() - 1000),
+        });
+        nextPending.push({ from: mid, to: range.to });
+        return;
+      }
+
+      for (const { repository } of [
+        ...commitRepos,
+        ...issueRepos,
+        ...prRepos,
+      ]) {
+        repos.add(repository.nameWithOwner);
+      }
+      for (const node of createdRepoNodes) {
+        if (node) {
+          repos.add(node.repository.nameWithOwner);
+        }
+      }
+    });
+
+    pending = nextPending;
+  }
+
+  return repos;
+};
+
+/**
+ * Fetch the all-time count of distinct repositories the user contributed to
+ * (commits, issues, PRs, or repo creation), across every contribution year.
+ *
+ * Unlike `repositoriesContributedTo` in `stats.graphql` (which is scoped to
+ * the past year by default), this walks every year individually via
+ * `contributionsCollection(from, to)` and de-duplicates the results, since
+ * that's the only way to see contributions further back than a year.
+ *
+ * Whether private contributions are included depends on the same rule as
+ * `fetchTotalContributions`: it's implied by whether the PAT used has access
+ * to the user's private contributions (i.e. it belongs to the user, or an
+ * org member if the org enabled that visibility). There's no separate way to
+ * request/deny private contributions independent of the PAT's own access.
+ *
+ * @param username GitHub username.
+ * @param years Contribution years to walk.
+ * @param pat Optional PAT override.
+ * @returns Count of distinct repositories.
+ */
+const fetchAllTimeRepositoriesContributedTo = async (
+  username: string,
+  years: Array<number>,
+  pat: string | null = null,
+): Promise<number> => {
+  const ranges: Array<PendingRange> = years.map((year) => ({
+    from: new Date(Date.UTC(year, 0, 1)),
+    to: new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)),
+  }));
+  const repos = await fetchReposContributedToForRanges(username, ranges, pat);
+  return repos.size;
+};
+
 /**
  * Fetch stats for a given username.
  *
@@ -490,6 +666,19 @@ const fetchStats = async (
     );
   }
 
+  // TODO:
+  // temporary: compute the all-time repositoriesContributedTo and just log it,
+  // until it's wired up as a real stat with query param + docs support.
+  const allTimeRepositoriesContributedTo =
+    await fetchAllTimeRepositoriesContributedTo(
+      username,
+      user.contributionsCollection.contributionYears,
+      pat,
+    );
+  logger.log(
+    `All-time repositoriesContributedTo for ${username}: ${allTimeRepositoriesContributedTo}`,
+  );
+
   // Retrieve stars while filtering out repositories to be hidden.
   const allExcludedRepos = [
     ...exclude_repo,
@@ -515,4 +704,8 @@ const fetchStats = async (
   return stats;
 };
 
-export { fetchStats, fetchRepoUserStats };
+export {
+  fetchStats,
+  fetchRepoUserStats,
+  fetchAllTimeRepositoriesContributedTo,
+};

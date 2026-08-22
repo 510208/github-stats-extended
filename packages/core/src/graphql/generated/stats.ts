@@ -76,6 +76,21 @@ export type YearContributionsFragment = {
   contributionCalendar: { totalContributions: number };
 };
 
+export type RangeContributionsByRepoFragment = {
+  commitContributionsByRepository: Array<{
+    repository: { nameWithOwner: string };
+  }>;
+  issueContributionsByRepository: Array<{
+    repository: { nameWithOwner: string };
+  }>;
+  pullRequestContributionsByRepository: Array<{
+    repository: { nameWithOwner: string };
+  }>;
+  repositoryContributions: {
+    nodes: Array<{ repository: { nameWithOwner: string } } | null> | null;
+  };
+};
+
 export const UserReposDocument = graphqlDocument<
   UserReposQuery,
   UserReposQueryVariables
