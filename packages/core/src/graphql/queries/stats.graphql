@@ -91,7 +91,7 @@ fragment YearContributions on ContributionsCollection {
   }
 }
 
-fragment RangeContributionsByRepo on d {
+fragment RangeContributionsByRepo on ContributionsCollection {
   commitContributionsByRepository(maxRepositories: $repoCap) {
     repository {
       nameWithOwner

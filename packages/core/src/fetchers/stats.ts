@@ -348,43 +348,29 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
 const roundToNearestMidnight = (timestamp: number): number =>
   Math.round(timestamp / MS_PER_DAY) * MS_PER_DAY;
 
-// TODO: consider merging this with `ContributionRange`
-/** A range still being resolved, alongside its actual `Date` bounds (for bisecting). */
-interface PendingRange {
-  from: Date;
-  to: Date;
-}
-
 /**
- * Fetch the distinct set of repositories a user contributed to (commits,
- * issues, PRs, or repo creation) across every given range.
+ * Fetch the repositories a user contributed to across every given range.
  *
- * All ranges still pending are queried together in a single request (one
- * aliased `contributionsCollection` field each). Whenever a range's
- * sub-collection returns `CONTRIBUTIONS_COLLECTION_REPO_CAP` results, that
- * range is bisected and requeried in the next round, since the true count
+ * All ranges still pending are queried together in a single request. Whenever a
+ * range's sub-collection returns `CONTRIBUTIONS_COLLECTION_REPO_CAP` results,
+ * that range is split and requeried in the next round, since the true count
  * could be higher and some repos may be missing from the response.
  *
  * @param username GitHub username.
  * @param ranges Ranges to fetch.
  * @param pat Optional PAT override.
- * @returns The distinct set of `nameWithOwner` repo identifiers.
+ * @returns The set of `nameWithOwner` repo identifiers.
  */
-const fetchReposContributedToForRanges = async (
+const fetchReposContributedTo = async (
   username: string,
-  ranges: Array<PendingRange>,
+  ranges: Array<ContributionRange>,
   pat: string | null,
 ): Promise<Set<string>> => {
   const repos = new Set<string>();
   let pending = ranges;
 
   while (pending.length > 0) {
-    const document = buildReposContributedToDocument(
-      pending.map((range): ContributionRange => ({
-        from: range.from.toISOString(),
-        to: range.to.toISOString(),
-      })),
-    );
+    const document = buildReposContributedToDocument(pending);
     const fetcher = createGraphQLFetcher(document, "bearer");
     const res = await retryer(
       fetcher,
@@ -415,7 +401,7 @@ const fetchReposContributedToForRanges = async (
       );
     }
 
-    const nextPending: Array<PendingRange> = [];
+    const nextPending: Array<ContributionRange> = [];
     pending.forEach((range, index) => {
       const rangeResponse = user[`range_${index}`];
       if (!rangeResponse) {
@@ -447,6 +433,9 @@ const fetchReposContributedToForRanges = async (
             range.from.getTime() + Math.floor(rangeDays / 2) * MS_PER_DAY,
           ),
         );
+        // GitHub seems to use only the date portion and ignore the time. So we
+        // subtract 1 second from the `to` of the first half to wrap it to the
+        // previous day and avoid a 1-day overlap of the two halves.
         nextPending.push({
           from: range.from,
           to: new Date(mid.getTime() - 1000),
@@ -476,35 +465,30 @@ const fetchReposContributedToForRanges = async (
 };
 
 /**
- * Fetch the all-time count of distinct repositories the user contributed to
- * (commits, issues, PRs, or repo creation), across every contribution year.
+ * Calculates the count of repositories the user contributed to, across every
+ * contribution year.
  *
- * Unlike `repositoriesContributedTo` in `stats.graphql` (which is scoped to
- * the past year by default), this walks every year individually via
- * `contributionsCollection(from, to)` and de-duplicates the results, since
- * that's the only way to see contributions further back than a year.
+ * GitHub's `repositoriesContributedTo` field can only span one year. So we walk
+ * every year individually via `contributionsCollection(from, to)` and
+ * de-duplicates the repo results.
  *
- * Whether private contributions are included depends on the same rule as
- * `fetchTotalContributions`: it's implied by whether the PAT used has access
- * to the user's private contributions (i.e. it belongs to the user, or an
- * org member if the org enabled that visibility). There's no separate way to
- * request/deny private contributions independent of the PAT's own access.
+ * Whether private contributions are included depends on the used PAT.
  *
  * @param username GitHub username.
  * @param years Contribution years to walk.
  * @param pat Optional PAT override.
- * @returns Count of distinct repositories.
+ * @returns Count of repositories.
  */
-const fetchAllTimeRepositoriesContributedTo = async (
+const fetchAllTimeReposContributedTo = async (
   username: string,
   years: Array<number>,
   pat: string | null = null,
 ): Promise<number> => {
-  const ranges: Array<PendingRange> = years.map((year) => ({
+  const ranges: Array<ContributionRange> = years.map((year) => ({
     from: new Date(Date.UTC(year, 0, 1)),
-    to: new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)),
+    to: new Date(Date.UTC(year, 11, 31, 23, 59, 59)),
   }));
-  const repos = await fetchReposContributedToForRanges(username, ranges, pat);
+  const repos = await fetchReposContributedTo(username, ranges, pat);
   return repos.size;
 };
 
@@ -669,14 +653,13 @@ const fetchStats = async (
   // TODO:
   // temporary: compute the all-time repositoriesContributedTo and just log it,
   // until it's wired up as a real stat with query param + docs support.
-  const allTimeRepositoriesContributedTo =
-    await fetchAllTimeRepositoriesContributedTo(
-      username,
-      user.contributionsCollection.contributionYears,
-      pat,
-    );
+  const allTimeReposContributedTo = await fetchAllTimeReposContributedTo(
+    username,
+    user.contributionsCollection.contributionYears,
+    pat,
+  );
   logger.log(
-    `All-time repositoriesContributedTo for ${username}: ${allTimeRepositoriesContributedTo}`,
+    `All-time repositoriesContributedTo for ${username}: ${allTimeReposContributedTo}`,
   );
 
   // Retrieve stars while filtering out repositories to be hidden.
@@ -704,8 +687,4 @@ const fetchStats = async (
   return stats;
 };
 
-export {
-  fetchStats,
-  fetchRepoUserStats,
-  fetchAllTimeRepositoriesContributedTo,
-};
+export { fetchStats, fetchRepoUserStats };

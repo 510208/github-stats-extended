@@ -13,23 +13,19 @@ interface ReposContributedToQuery {
   user: Record<`range_${number}`, RangeContributionsByRepoFragment> | null;
 }
 
-/** A `[from, to]` date range to query, both bounds as ISO 8601 timestamps. */
+/** A date range to query for contributions. */
 interface ContributionRange {
-  from: string;
-  to: string;
+  from: Date;
+  to: Date;
 }
 
 /**
- * Build a query for the repositories a user contributed to within multiple
- * time ranges, grouped by contribution type. One aliased
- * `contributionsCollection` field per range, so all ranges are fetched in a
- * single request. The shape is only known at runtime.
+ * Build a query for the repositories a user contributed to within multiple time
+ * ranges. One aliased `contributionsCollection` field per range, so all ranges
+ * are fetched in a single request. The shape is only known at runtime.
  *
  * Mirrors the `contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]`
- * filter used by `repositoriesContributedTo` in `stats.graphql` (review
- * contributions are intentionally left out), but `contributionsCollection`'s
- * by-repository fields cap out at 100 results each, so callers need to split
- * a saturated range in two and re-query.
+ * filter used by `repositoriesContributedTo` in `stats.graphql`.
  *
  * @param ranges Ranges to fetch, one `range_<index>` alias each.
  * @returns Document for `createGraphQLFetcher`.
@@ -38,7 +34,7 @@ const buildReposContributedToDocument = (ranges: Array<ContributionRange>) => {
   const rangeFields = ranges
     .map(
       ({ from, to }, index) =>
-        `range_${index}: contributionsCollection(from: "${from}", to: "${to}") { ...RangeContributionsByRepo }`,
+        `range_${index}: contributionsCollection(from: "${from.toISOString()}", to: "${to.toISOString()}") { ...RangeContributionsByRepo }`,
     )
     .join("\n");
 
