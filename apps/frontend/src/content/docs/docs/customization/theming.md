@@ -45,7 +45,7 @@ You can use [GitHub's media feature](https://github.blog/changelog/2022-05-19-sp
 
 For example the image at the top of the Responsive Card Theme section works like this - it follows the theme you set for this page.
 
-##### Set light and dark mode in one card
+### Set light and dark mode in one card
 
 Use the `theme_light` and `theme_dark` or `*_light` / `*_dark` color parameters to embed both modes in a single card URL. See [Light & Dark Mode Parameters](#light--dark-mode-parameters) below for full details. The card will then display in light mode or dark mode based on your browser / operating system settings.
 
@@ -105,7 +105,7 @@ You can use the `bg_color` parameter to make any of [the available themes](/fron
 
 </details>
 
-#### Light & Dark Mode Parameters
+## Light & Dark Mode Parameters
 
 You can use the `theme_light`, `theme_dark`, and `*_light` / `*_dark` color parameters to customize the look of your card for different modes.
 
