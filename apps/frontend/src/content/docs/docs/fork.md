@@ -32,11 +32,32 @@ GitHub-Stats-Extended proactively precomputes and caches cards. This solves the 
 
 GitHub-Stats-Extended fetches up to 1000 of your starred repositories to accurately compute your stars count. In github-readme-stats, this is limited to 100 repos because github-readme-stats doesn't have the above-mentioned performance improvements.
 
+### Light and dark mode in a single card URL
+
+GitHub-Stats-Extended adds `theme_light`, `theme_dark`, and `*_light` / `*_dark` color parameter variants (e.g. `title_color_light`, `title_color_dark`) that let you embed both light and dark mode in a single card URL. The card will automatically switch between the two based on the viewer's browser or OS theme setting.
+
+```md
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&theme_light=light_github&theme_dark=dark_github)
+```
+
+This approach works on any platform, not just GitHub - and on GitHub sponsorship pages, which don't support the other approaches to light/dark theming. See [Set light and dark mode in one card](/frontend/docs/customization/theming/#set-light-and-dark-mode-in-one-card) for full documentation.
+
+### GitHub-themed light and dark themes
+
+GitHub-Stats-Extended adds `light_github` and `dark_github` [themes](/frontend/docs/customization/themes/) that exactly match GitHub's default light and dark UI colors. For repo and gist cards, use `light_github_repocard` and `dark_github_repocard` instead, which use a different icon color.
+
+### New Contributions stat
+
+GitHub-Stats-Extended adds an optional stat showing the total number of [contributions](https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference#what-counts-as-a-contribution) (commits, pull requests, issues, etc.) across all years of a user's GitHub history. Add `&show=contributions` to your stats card URL to enable it. Whether private contributions are counted depends on [your GitHub profile visibility settings](https://docs.github.com/en/account-and-profile/how-tos/contribution-settings/manage-visibility-settings-for-private-contributions-and-achievements#changing-the-visibility-of-your-private-contributions).
+
+Note that the pre-existing "Contributed to" stat indicates the number of repositories a user has contributed to, not the number of contributions.
+
 ### Customization of top languages card
 
-GitHub-Stats-Extended allows you to display your top languages without any numbers via the `hide_values` parameter. And the `prog_bar_bg_color` parameter allows you to customize the background color of the progress bars, e.g. by setting it to white:
+GitHub-Stats-Extended allows you to display your top languages without any numbers via the `hide_values` parameter. And the `prog_bar_bg_color` parameter allows you to customize the background color of the progress bars, e.g. by setting it to transparent:
 
-![anuraghazra's top languages without numbers](/api/top-langs?username=anuraghazra&langs_count=4&hide_values=true&prog_bar_bg_color=fff)
+<img class="card-preview-light" src="/api/top-langs?username=anuraghazra&langs_count=4&hide_values=true&prog_bar_bg_color=0000&theme=light_github" alt="anuraghazra's top languages without numbers" />
+<img class="card-preview-dark" src="/api/top-langs?username=anuraghazra&langs_count=4&hide_values=true&prog_bar_bg_color=0000&theme=dark_github" alt="anuraghazra's top languages without numbers" />
 
 ### Private contributions support
 
@@ -54,7 +75,8 @@ See [here](/frontend/docs/cards/stats/#filtering-by-repository-and-owner) for fu
 
 anuraghazra's contributions to github-readme-stats:
 
-![anuraghazra's contributions to github-readme-stats](/api/pin?username=anuraghazra&repo=github-readme-stats&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented)
+<img class="card-preview-light" src="/api/pin?username=anuraghazra&repo=github-readme-stats&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&theme=light_github_repocard" alt="anuraghazra's contributions to github-readme-stats" />
+<img class="card-preview-dark" src="/api/pin?username=anuraghazra&repo=github-readme-stats&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&theme=dark_github_repocard" alt="anuraghazra's contributions to github-readme-stats" />
 
 Add `&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented` to your repo card url to display your contributions to the pinned repository.
 
@@ -62,7 +84,8 @@ Add `&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commen
 
 anurag's contributions to razorpay:
 
-![anurag's contributions to razorpay](/api?username=anuraghazra&owner=razorpay&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=anurag%27s%20contributions%20to%20razorpay&card_width=333)
+<img class="card-preview-light" src="/api?username=anuraghazra&owner=razorpay&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=anurag%27s%20contributions%20to%20razorpay&card_width=333&theme=light_github" alt="anurag's contributions to razorpay" />
+<img class="card-preview-dark" src="/api?username=anuraghazra&owner=razorpay&hide=prs,issues,stars,commits,contribs&show=prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented&hide_rank=true&custom_title=anurag%27s%20contributions%20to%20razorpay&card_width=333&theme=dark_github" alt="anurag's contributions to razorpay" />
 
 Add `&repo=userA/repoA,orgB/repoB` or `&owner=userC,orgD` to your profile stats url to filter your contributions by repo or organization. (The screenshot above uses further customization options.)
 
