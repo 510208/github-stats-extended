@@ -52,6 +52,9 @@ const data_stats = {
 const data_year2003 = structuredClone(data_stats);
 data_year2003.data.user.commits.totalCommitContributions = 428;
 
+const data_stats_with_own_repos = structuredClone(data_stats);
+data_stats_with_own_repos.data.user.repositoriesContributedTo.totalCount = 75;
+
 const data_without_pull_requests = {
   data: {
     user: {
@@ -116,6 +119,37 @@ const data_contributions = {
   },
 };
 
+const data_repos_contributed_to = {
+  data: {
+    user: {
+      range_0: {
+        commitContributionsByRepository: [
+          { repository: { nameWithOwner: "org/repo1" } },
+        ],
+        issueContributionsByRepository: [
+          { repository: { nameWithOwner: "org/repo2" } },
+        ],
+        pullRequestContributionsByRepository: [],
+        repositoryContributions: {
+          nodes: [{ repository: { nameWithOwner: "org/repo4" } }],
+        },
+      },
+      range_1: {
+        commitContributionsByRepository: [
+          { repository: { nameWithOwner: "anuraghazra/own-repo" } },
+        ],
+        issueContributionsByRepository: [],
+        pullRequestContributionsByRepository: [
+          { repository: { nameWithOwner: "org/repo3" } },
+        ],
+        repositoryContributions: {
+          nodes: [{ repository: { nameWithOwner: "org/repo2" } }],
+        },
+      },
+    },
+  },
+};
+
 const error = {
   errors: [
     {
@@ -134,20 +168,28 @@ beforeEach(() => {
   loadConfigFromEnv();
   mock.onPost("https://api.github.com/graphql").reply((cfg) => {
     const req = JSON.parse(cfg.data as string) as {
-      variables?: { startTime?: string };
+      variables?: { startTime?: string; includeUserRepositories?: boolean };
       query: string;
     };
 
     if (req.variables?.startTime?.startsWith("2003")) {
       return [200, data_year2003];
     }
+    if (req.query.includes("userReposContributedTo")) {
+      return [200, data_repos_contributed_to];
+    }
     if (req.query.includes("contributionCalendar")) {
       return [200, data_contributions];
     }
-    return [
-      200,
-      req.query.includes("totalCommitContributions") ? data_stats : data_repo,
-    ];
+    if (req.query.includes("totalCommitContributions")) {
+      return [
+        200,
+        req.variables?.includeUserRepositories
+          ? data_stats_with_own_repos
+          : data_stats,
+      ];
+    }
+    return [200, data_repo];
   });
 });
 
@@ -172,6 +214,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -214,6 +257,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -264,6 +308,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 1000,
       totalIssues: 200,
@@ -323,6 +368,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 1000,
       totalIssues: 200,
@@ -361,6 +407,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -399,6 +446,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -437,6 +485,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -517,6 +566,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -552,6 +602,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -596,6 +647,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 428,
       totalIssues: 200,
@@ -733,6 +785,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      allTimeContributedTo: 0,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -751,5 +804,82 @@ describe("Test fetchStats", () => {
       totalContributions: 0,
       rank,
     });
+  });
+
+  it("should include own repos in contributed-to count when contribs_include_own_repos is true", async () => {
+    const statsWithout = await fetchStats("anuraghazra");
+    expect(statsWithout.contributedTo).toBe(61);
+
+    const statsWith = await fetchStats(
+      "anuraghazra",
+      false,
+      [],
+      false,
+      false,
+      false,
+      undefined,
+      [],
+      [],
+      false,
+      false,
+      false,
+      false,
+      false,
+      [],
+      false,
+      false,
+      true, // contribs_include_own_repos
+    );
+    expect(statsWith.contributedTo).toBe(75);
+  });
+
+  it("should fetch all-time repos contributed to when include_all_time_contribs is true", async () => {
+    const stats = await fetchStats(
+      "anuraghazra",
+      false,
+      [],
+      false,
+      false,
+      false,
+      undefined,
+      [],
+      [],
+      false,
+      false,
+      false,
+      false,
+      false,
+      [],
+      false,
+      true, // include_all_time_contribs
+      false, // contribs_include_own_repos
+    );
+
+    expect(stats.allTimeContributedTo).toBe(4);
+  });
+
+  it("should include own repos in all-time contributed-to count when contribs_include_own_repos is true", async () => {
+    const stats = await fetchStats(
+      "anuraghazra",
+      false,
+      [],
+      false,
+      false,
+      false,
+      undefined,
+      [],
+      [],
+      false,
+      false,
+      false,
+      false,
+      false,
+      [],
+      false,
+      true, // include_all_time_contribs
+      true, // contribs_include_own_repos
+    );
+
+    expect(stats.allTimeContributedTo).toBe(5);
   });
 });

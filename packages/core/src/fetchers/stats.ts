@@ -503,7 +503,12 @@ const fetchAllTimeReposContributedTo = async (
     from: new Date(Date.UTC(year, 0, 1)),
     to: new Date(Date.UTC(year, 11, 31, 23, 59, 59)),
   }));
-  const repos = await fetchReposContributedTo(username, ranges, includeOwnRepos, pat);
+  const repos = await fetchReposContributedTo(
+    username,
+    ranges,
+    includeOwnRepos,
+    pat,
+  );
   return repos.size;
 };
 

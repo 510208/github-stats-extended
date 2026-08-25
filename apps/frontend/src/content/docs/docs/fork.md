@@ -32,6 +32,12 @@ GitHub-Stats-Extended proactively precomputes and caches cards. This solves the 
 
 GitHub-Stats-Extended fetches up to 1000 of your starred repositories to accurately compute your stars count. In github-readme-stats, this is limited to 100 repos because github-readme-stats doesn't have the above-mentioned performance improvements.
 
+### New options for "contributed-to" stats
+
+GitHub-Stats-Extended adds an `all_time_contribs` stat that shows the total number of repositories a user has contributed to across all years — not just the past year like the default `contribs` stat. Add [`&show=all_time_contribs`](/frontend/docs/cards/stats/#showing-additional-individual-stats) to your stats card URL to display it.
+
+GitHub-Stats-Extended also adds a parameter [`contribs_include_own_repos`](/frontend/docs/cards/stats/#options) to include the user's own repositories in the `contribs` and `all_time_contribs` stats. By default, both stats exclude the user's own repositories and only count repositories owned by other users or organizations.
+
 ### Customization of top languages card
 
 GitHub-Stats-Extended allows you to display your top languages without any numbers via the `hide_values` parameter. And the `prog_bar_bg_color` parameter allows you to customize the background color of the progress bars, e.g. by setting it to white:
