@@ -43,28 +43,28 @@ const buildReposContributedToDocument = (ranges: Array<ContributionRange>) => {
     ReposContributedToQuery,
     ReposContributedToQueryVariables
   >(`
-query userReposContributedTo($login: String!, $repoCap: Int!) {
+query userReposContributedTo($login: String!, $maxRepositories: Int!) {
   user(login: $login) {
     ${rangeFields}
   }
 }
 fragment RangeContributionsByRepo on ContributionsCollection {
-  commitContributionsByRepository(maxRepositories: $repoCap) {
+  commitContributionsByRepository(maxRepositories: $maxRepositories) {
     repository {
       nameWithOwner
     }
   }
-  issueContributionsByRepository(maxRepositories: $repoCap) {
+  issueContributionsByRepository(maxRepositories: $maxRepositories) {
     repository {
       nameWithOwner
     }
   }
-  pullRequestContributionsByRepository(maxRepositories: $repoCap) {
+  pullRequestContributionsByRepository(maxRepositories: $maxRepositories) {
     repository {
       nameWithOwner
     }
   }
-  repositoryContributions(first: $repoCap) {
+  repositoryContributions(first: $maxRepositories) {
     nodes {
       repository {
         nameWithOwner

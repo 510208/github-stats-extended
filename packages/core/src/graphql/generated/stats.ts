@@ -47,6 +47,7 @@ export type UserInfoQueryVariables = Exact<{
     | Types.RepositoryAffiliation
     | null
     | undefined;
+  includeUserRepositories: boolean;
 }>;
 
 export type UserInfoQuery = {
@@ -126,7 +127,7 @@ export const UserInfoDocument = graphqlDocument<
   UserInfoQuery,
   UserInfoQueryVariables
 >(`
-query userInfo($login: String!, $after: String, $includeMergedPullRequests: Boolean!, $includeDiscussions: Boolean!, $includeDiscussionsAnswers: Boolean!, $startTime: DateTime = null, $ownerAffiliations: [RepositoryAffiliation]) {
+query userInfo($login: String!, $after: String, $includeMergedPullRequests: Boolean!, $includeDiscussions: Boolean!, $includeDiscussionsAnswers: Boolean!, $startTime: DateTime = null, $ownerAffiliations: [RepositoryAffiliation], $includeUserRepositories: Boolean!) {
   user(login: $login) {
     name
     login
@@ -139,6 +140,7 @@ query userInfo($login: String!, $after: String, $includeMergedPullRequests: Bool
     repositoriesContributedTo(
       first: 1
       contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]
+      includeUserRepositories: $includeUserRepositories
     ) {
       totalCount
     }

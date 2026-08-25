@@ -49,6 +49,7 @@ const reposFetcher = createGraphQLFetcher(UserReposDocument, "bearer");
  * @param variables.includeDiscussionsAnswers Include discussions answers.
  * @param variables.startTime Time to start the count of total commits.
  * @param variables.ownerAffiliations The owner affiliations to filter by. Default: OWNER.
+ * @param variables.includeUserRepositories Whether to include the user's own repositories in the repos contributed.
  * @param variables.pat PAT override or null.
  * @returns The stats response, with every fetched page's repos merged in.
  *
@@ -62,6 +63,7 @@ const statsFetcher = async ({
   includeDiscussionsAnswers,
   startTime,
   ownerAffiliations,
+  includeUserRepositories,
   pat,
 }: {
   username: string;
@@ -70,6 +72,7 @@ const statsFetcher = async ({
   includeDiscussionsAnswers: boolean;
   startTime: string | undefined;
   ownerAffiliations: UserInfoQueryVariables["ownerAffiliations"];
+  includeUserRepositories: boolean;
   pat: string | null;
 }): Promise<StatsFetcherResponse> => {
   // only the first request carries the stats themselves
@@ -83,6 +86,7 @@ const statsFetcher = async ({
       includeDiscussionsAnswers,
       startTime,
       ownerAffiliations,
+      includeUserRepositories,
     },
     pat,
   );
@@ -358,12 +362,14 @@ const roundToNearestMidnight = (timestamp: number): number =>
  *
  * @param username GitHub username.
  * @param ranges Ranges to fetch.
+ * @param includeOwnRepos Whether to include the user's own repos in the result.
  * @param pat Optional PAT override.
  * @returns The set of `nameWithOwner` repo identifiers.
  */
 const fetchReposContributedTo = async (
   username: string,
   ranges: Array<ContributionRange>,
+  includeOwnRepos: boolean,
   pat: string | null,
 ): Promise<Set<string>> => {
   const repos = new Set<string>();
@@ -461,6 +467,13 @@ const fetchReposContributedTo = async (
     pending = nextPending;
   }
 
+  if (!includeOwnRepos) {
+    for (const repo of repos) {
+      if (repo.startsWith(`${username}/`)) {
+        repos.delete(repo);
+      }
+    }
+  }
   return repos;
 };
 
@@ -476,19 +489,21 @@ const fetchReposContributedTo = async (
  *
  * @param username GitHub username.
  * @param years Contribution years to walk.
+ * @param includeOwnRepos Whether to include the user's own repositories in the count.
  * @param pat Optional PAT override.
  * @returns Count of repositories.
  */
 const fetchAllTimeReposContributedTo = async (
   username: string,
   years: Array<number>,
+  includeOwnRepos: boolean,
   pat: string | null = null,
 ): Promise<number> => {
   const ranges: Array<ContributionRange> = years.map((year) => ({
     from: new Date(Date.UTC(year, 0, 1)),
     to: new Date(Date.UTC(year, 11, 31, 23, 59, 59)),
   }));
-  const repos = await fetchReposContributedTo(username, ranges, pat);
+  const repos = await fetchReposContributedTo(username, ranges, includeOwnRepos, pat);
   return repos.size;
 };
 
@@ -511,6 +526,8 @@ const fetchAllTimeReposContributedTo = async (
  * @param include_issues_commented Include count of issues commented.
  * @param ownerAffiliations Owner affiliations. Default: OWNER.
  * @param include_contributions Include all-time contributions.
+ * @param include_all_time_contribs Include all-time count of repos contributed to.
+ * @param contribs_include_own_repos Include user-owned repos in contributed-to counts.
  * @param pat Optional PAT override.
  * @returns Stats data.
  */
@@ -531,6 +548,8 @@ const fetchStats = async (
   include_issues_commented = false,
   ownerAffiliations: Array<string> = [],
   include_contributions = false,
+  include_all_time_contribs = false,
+  contribs_include_own_repos = false,
   pat: string | null = null,
 ): Promise<StatsData> => {
   if (!username) {
@@ -549,6 +568,7 @@ const fetchStats = async (
     totalDiscussionsStarted: 0,
     totalDiscussionsAnswered: 0,
     contributedTo: 0,
+    allTimeContributedTo: 0,
     totalPRsAuthored: 0,
     totalPRsCommented: 0,
     totalPRsReviewed: 0,
@@ -566,6 +586,7 @@ const fetchStats = async (
     includeDiscussionsAnswers: include_discussions_answers,
     startTime: commits_year ? `${commits_year}-01-01T00:00:00Z` : undefined,
     ownerAffiliations: affiliations,
+    includeUserRepositories: contribs_include_own_repos,
     pat,
   });
 
@@ -650,17 +671,14 @@ const fetchStats = async (
     );
   }
 
-  // TODO:
-  // temporary: compute the all-time repositoriesContributedTo and just log it,
-  // until it's wired up as a real stat with query param + docs support.
-  const allTimeReposContributedTo = await fetchAllTimeReposContributedTo(
-    username,
-    user.contributionsCollection.contributionYears,
-    pat,
-  );
-  logger.log(
-    `All-time repositoriesContributedTo for ${username}: ${allTimeReposContributedTo}`,
-  );
+  if (include_all_time_contribs) {
+    stats.allTimeContributedTo = await fetchAllTimeReposContributedTo(
+      username,
+      user.contributionsCollection.contributionYears,
+      contribs_include_own_repos,
+      pat,
+    );
+  }
 
   // Retrieve stars while filtering out repositories to be hidden.
   const allExcludedRepos = [

@@ -35,6 +35,7 @@ export default async (
     number_precision,
     rank_icon,
     show,
+    contribs_include_own_repos,
     ...remainingParams
   },
   pat = null,
@@ -106,6 +107,8 @@ export default async (
       showStats.includes("issues_commented"),
       parseArray(role),
       showStats.includes("contributions"),
+      showStats.includes("all_time_contribs"),
+      parseBoolean(contribs_include_own_repos),
       pat,
     );
 
