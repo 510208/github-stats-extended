@@ -32,6 +32,11 @@ You can pass a query parameter `&show=` to show any specific additional stats wi
 ![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show=contributions,reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented)
 ```
 
+:::note
+`contributions` counts contributions across all years;
+the `contribs` item under `&hide=` counts repositories contributed to.
+:::
+
 ## Showing icons
 
 To enable icons, you can pass `&show_icons=true` in the query param, like so:
@@ -83,7 +88,7 @@ You can customize the appearance and behavior of the stats card using the [commo
 | `show`                   | Shows [additional items](#showing-additional-individual-stats) on the stats card (i.e. `contributions`, `reviews`, `discussions_started`, `discussions_answered`, `prs_merged` or `prs_merged_percentage`. And the following, which support the `repo` and `owner` filters: `prs_authored`, `prs_commented`, `prs_reviewed`, `issues_authored` or `issues_commented`). | string (comma-separated values) | `null`                              |
 | `commits_year`           | Filters and counts only commits made in the specified year.                                                                                                                                                                                                                                                                                                            | integer _(YYYY)_                | `<current year> (one year to date)` |
 
-<sup>1</sup>: This parameter supports light and dark mode. You can use `ring_color_light` and `ring_color_dark` to specify different colors for light and dark mode.
+<sup>1</sup>: Supports light and dark mode via `ring_color_light` and `ring_color_dark`.
 
 :::caution[Warning]
 Custom title should be URI-escaped, as specified in [Percent Encoding](https://en.wikipedia.org/wiki/Percent-encoding) (i.e: `Anurag's GitHub Stats` should become `Anurag%27s%20GitHub%20Stats`). You can use [urlencoder.org](https://www.urlencoder.org/) to help you do this automatically.
