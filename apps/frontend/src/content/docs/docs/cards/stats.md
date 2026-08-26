@@ -26,15 +26,16 @@ You can pass a query parameter `&hide=` to hide any specific stats with comma-se
 
 You can pass a query parameter `&show=` to show any specific additional stats with comma-separated values.
 
-> Options: `&show=all_time_contribs,contributions,reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented`
+> Options: `&show=contributions,all_time_contribs,reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented`
 
 ```md
-![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show=all_time_contribs,contributions,reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented)
+![Anurag's GitHub stats](https://github-stats-extended.vercel.app/api?username=anuraghazra&show=contributions,all_time_contribs,reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_authored,prs_commented,prs_reviewed,issues_authored,issues_commented)
 ```
 
 :::note
-`contributions` counts contributions across all years;
-the `contribs` item under `&hide=` counts repositories contributed to.
+[`contributions`](/frontend/docs/fork/#new-contributions-stat) counts contributions across all years.
+[`all_time_contribs`](/frontend/docs/fork/#new-options-for-contributed-to-stats) counts repositories the user has contributed to across all years.
+The `contribs` stat under `&hide=` counts repositories the user has contributed to in the past year.
 :::
 
 ## Showing icons
