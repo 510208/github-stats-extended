@@ -131,7 +131,7 @@ const data_repos_contributed_to = {
         ],
         pullRequestContributionsByRepository: [],
         repositoryContributions: {
-          nodes: [{ repository: { nameWithOwner: "org/repo4" } }],
+          nodes: [{ repository: { nameWithOwner: "org/repo3" } }],
         },
       },
       range_1: {
@@ -140,7 +140,7 @@ const data_repos_contributed_to = {
         ],
         issueContributionsByRepository: [],
         pullRequestContributionsByRepository: [
-          { repository: { nameWithOwner: "org/repo3" } },
+          { repository: { nameWithOwner: "org/repo4" } },
         ],
         repositoryContributions: {
           nodes: [{ repository: { nameWithOwner: "org/repo2" } }],
@@ -881,5 +881,58 @@ describe("Test fetchStats", () => {
     );
 
     expect(stats.allTimeContributedTo).toBe(5);
+  });
+
+  it("should split saturated ranges until 1-day", async () => {
+    const saturatedRange = {
+      commitContributionsByRepository: Array.from({ length: 100 }, (_, i) => ({
+        repository: { nameWithOwner: `org/repo${i}` },
+      })),
+      issueContributionsByRepository: [],
+      pullRequestContributionsByRepository: [],
+      repositoryContributions: { nodes: [] },
+    };
+
+    let requestCount = 0;
+
+    mock.reset();
+    mock.onPost("https://api.github.com/graphql").reply((cfg) => {
+      requestCount++;
+      const req = JSON.parse(cfg.data as string) as { query: string };
+
+      if (req.query.includes("userReposContributedTo")) {
+        const rangeCount = (req.query.match(/range_\d+:/g) ?? []).length;
+        const ranges: Record<string, unknown> = {};
+        for (let i = 0; i < rangeCount; i++) {
+          ranges[`range_${i}`] = saturatedRange;
+        }
+        return [200, { data: { user: ranges } }];
+      }
+      return [200, data_stats];
+    });
+
+    const stats = await fetchStats(
+      "anuraghazra",
+      false,
+      [],
+      false,
+      false,
+      false,
+      undefined,
+      [],
+      [],
+      false,
+      false,
+      false,
+      false,
+      false,
+      [],
+      false,
+      true, // include_all_time_contribs
+      false,
+    );
+
+    expect(stats.allTimeContributedTo).toBe(100);
+    expect(requestCount).toEqual(11);
   });
 });

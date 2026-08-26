@@ -449,6 +449,11 @@ const fetchReposContributedTo = async (
         nextPending.push({ from: mid, to: range.to });
         return;
       }
+      if (isSaturated) {
+        logger.log(
+          `Range ${range.from.toISOString()} - ${range.to.toISOString()} is saturated but cannot be split further.`,
+        );
+      }
 
       for (const { repository } of [
         ...commitRepos,
@@ -464,6 +469,11 @@ const fetchReposContributedTo = async (
       }
     });
 
+    if (nextPending.length > 0) {
+      logger.log(
+        `found ${pending.length} saturated ranges, splitting and retrying...`,
+      );
+    }
     pending = nextPending;
   }
 
@@ -483,7 +493,7 @@ const fetchReposContributedTo = async (
  *
  * GitHub's `repositoriesContributedTo` field can only span one year. So we walk
  * every year individually via `contributionsCollection(from, to)` and
- * de-duplicates the repo results.
+ * de-duplicate the repo results.
  *
  * Whether private contributions are included depends on the used PAT.
  *
