@@ -49,7 +49,7 @@ const reposFetcher = createGraphQLFetcher(UserReposDocument, "bearer");
  * @param variables.includeDiscussionsAnswers Include discussions answers.
  * @param variables.startTime Time to start the count of total commits.
  * @param variables.ownerAffiliations The owner affiliations to filter by. Default: OWNER.
- * @param variables.includeUserRepositories Whether to include the user's own repositories in the repos contributed.
+ * @param variables.includeUserRepositories Whether to include the user's own repositories in the repos contributed to.
  * @param variables.pat PAT override or null.
  * @returns The stats response, with every fetched page's repos merged in.
  *
@@ -356,7 +356,7 @@ const roundToNearestMidnight = (timestamp: number): number =>
  * Fetch the repositories a user contributed to across every given range.
  *
  * All ranges still pending are queried together in a single request. Whenever a
- * range's sub-collection returns `CONTRIBUTIONS_COLLECTION_REPO_CAP` results,
+ * range's sub-collection returns `MAX_REPOSITORIES_LIMIT` results,
  * that range is split and requeried in the next round, since the true count
  * could be higher and some repos may be missing from the response.
  *
